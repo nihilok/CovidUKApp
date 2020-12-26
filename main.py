@@ -41,6 +41,7 @@ class MainApp(MDApp):
 
 
     def build(self):
+        Clock.max_iteration = 20
         pass
 
     def on_start(self):
