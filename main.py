@@ -90,16 +90,17 @@ class MainApp(MDApp):
         )
         layout.add_widget(spacer)
 
-        try:
-            for t in threads:
-                t.join()
-        except RuntimeError as r:
-            print(r)
+        # try:
+        #     for t in threads:
+        #         t.join()
+        # except RuntimeError as r:
+        #     print(r)
         Clock.schedule_once(self.hide_loading_screen)
 
     def dataframe_callback(self):
         self.display_loading_screen()
         t = Thread(target=self.dataframe_thread)
+        t.daemon = True
         t.start()
         threads.append(t)
 
@@ -109,11 +110,11 @@ class MainApp(MDApp):
             self.populate_dataframe(area.text)
         else:
             area.hint_text = 'You must write something'
-            try:
-                for t in threads:
-                    t.join()
-            except RuntimeError as r:
-                print(r)
+            # try:
+            #     for t in threads:
+            #         t.join()
+            # except RuntimeError as r:
+            #     print(r)
             Clock.schedule_once(self.hide_loading_screen)
             Clock.schedule_once(lambda dt: self.reset_hint_text(), 2)
 
