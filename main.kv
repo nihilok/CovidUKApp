@@ -1,0 +1,133 @@
+#:include kv/helpscreen.kv
+
+#:import threading threading
+
+<CustomRoundIconButton@MDFillRoundFlatIconButton>:
+    pos_hint: {"center_x": .5}
+
+<CustomMDSpinner>:
+    size_hint: None, None
+    size: dp(75), dp(75)
+    pos_hint: {'center_x': .5, 'center_y': .5}
+    active: app.progressspinner
+
+<MyCard@MDCard>:
+    canvas.before:
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+    orientation: "vertical"
+    spacing: 10
+    padding: 10
+    size_hint: 0.9, None
+    border_radius: '10dp'
+
+<SettingsScreen>:
+    GridLayout:
+        cols: 1
+        rows: 1
+        BoxLayout:
+            size_hint: 1, 1
+            orientation: "vertical"
+            padding: 30, 30
+            spacing: dp(40)
+            MDLabel:
+                text: "Settings"
+                font_style: "H6"
+                theme_text_color: 'Secondary'
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1] + dp(90)
+            MDLabel:
+            CustomRoundIconButton:
+                width: dp(300) + (self.ids.lbl_txt.texture_size[0] - self.ids.lbl_txt.texture_size[0])
+                icon: "theme-light-dark"
+                text: "Day / Night"
+                on_release:
+                    app.night_mode()
+
+            MDLabel:
+            MDLabel:
+
+<DataScreen>:
+
+    BoxLayout:
+        id: data_screen_layout
+        orientation: "vertical"
+        spacing: 20
+        MDLabel:
+            id: data_screen_title
+            text: "New Cases / Deaths by Date"
+            font_style: "H6"
+            theme_text_color: 'Secondary'
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1] + dp(20)
+        MyCard:
+            height: '120dp'
+            pos_hint: {'center_x': 0.5}
+            border_radius: 10
+            radius: [20]
+            id: search_card
+            MDTextField:
+                id: area_name
+                hint_text: "Area:"
+                write_tab: False
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                size_hint_x: .6
+                on_text_validate:
+                    app.dataframe_callback()
+            MDRaisedButton:
+                id: btn
+                text: "Search"
+                halign: "center"
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                on_release:
+                    app.dataframe_callback()
+        MDLabel:
+            id: spacer
+            height: '5dp'
+
+
+
+<GraphScreen>:
+
+
+BoxLayout:
+    orientation: "vertical"
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1, "center_x": .5}
+        title: "Covid Data UK"
+        specific_text_color: app.theme_cls.secondary_text_color
+        halign: "center"
+        elevation: 8
+    MDBottomNavigation:
+        id: main_screen_manager
+        MDBottomNavigationItem:
+            text: "Data"
+            name: "data_screen"
+
+            icon: "file-document-box-search-outline"
+            DataScreen:
+                id: data_screen
+
+        MDBottomNavigationItem:
+            text: "Graph"
+            name: "graph_screen"
+            icon: "chart-timeline-variant"
+            GraphScreen:
+
+        MDBottomNavigationItem:
+            text: "Settings"
+            name: "settings_screen"
+            icon: "settings"
+            SettingsScreen:
+
+        MDBottomNavigationItem:
+            text: "About"
+            name: "help_screen"
+            icon: "help-circle"
+            HelpScreen:
+
+

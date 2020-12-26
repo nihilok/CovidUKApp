@@ -1,0 +1,87 @@
+<HelpScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        spacing: "20dp"
+        padding: "20dp"
+        BoxLayout
+            orientation: "vertical"
+            spacing: "20dp"
+            size_hint_y: .2
+            MDLabel:
+                text: "Covid Data UK is a project by MJFullStack 2020 \nIn association with CuidadorCo \nData from https://api.coronavirus.data.gov.uk"
+                font_style: 'Subtitle2'
+                theme_text_color: 'Secondary'
+                halign: 'center'
+                size_hint: 1, None
+                height: self.texture_size[1]
+            MDLabel:
+                text: "@MJFullStack @CuidadorCo"
+                font_style: "H6"
+                theme_text_color: 'Secondary'
+                halign: 'center'
+                size_hint: 1, None
+                height: self.texture_size[1]
+            GridLayout:
+                rows: 1
+                cols: 6
+                spacing: "10dp"
+                size_hint_y: None
+                height: content.height
+                MDLabel:
+
+                MDIconButton:
+                    id: content
+                    icon: "facebook"
+                    size_hint: 1, 1
+                    on_release:
+                        # app.open_socials("https://facebook.com/cuidadorco")
+                        app.callback()
+
+                MDIconButton:
+                    icon: "twitter"
+                    size_hint: 1, 1
+                    on_release:
+                        # app.open_socials("https://twitter.com/cuidadorco")
+                        app.callback()
+
+                MDIconButton:
+                    icon: "instagram"
+                    size_hint: 1, 1
+                    on_release:
+                        # app.open_socials("https://instagram.com/cuidadorco")
+                        app.callback()
+
+                MDIconButton:
+                    icon: "whatsapp"
+                    size_hint: 1, 1
+                    on_release:
+                        # app.open_socials("https://instagram.com/cuidadorco")
+                        app.callback()
+
+                MDLabel:
+        
+            MDSeparator:
+                height: "1dp"
+            MDLabel:
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: 0, dp(35)
+            spacing: dp(10)
+            size_hint_y: .2
+            MDSeparator:
+                height: "1dp"
+            MDLabel:
+                text: "\nCuidador Co is a registered C.I.C limited by guarantee in the UK.\nCompany No 12175525"
+                theme_text_color: "Hint"
+                font_style: "Caption"
+                halign: "center"
+                size_hint: 1, None
+                height: self.texture_size[1]
+            MDLabel:
+                text: "app development by 'MJFullStack'"
+                theme_text_color: 'Hint'
+                font_style: "Caption"
+                halign: 'center'
+                size_hint: 1, None
+                height: self.texture_size[1]
