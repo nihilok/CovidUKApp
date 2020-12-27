@@ -69,8 +69,6 @@ class MainApp(MDApp):
         else:
             self.theme_cls.theme_style = "Dark"
 
-
-
     def populate_dataframe(self, area, *args):
         try:
             data, df = logic.get_data(area)
@@ -185,10 +183,12 @@ class MainApp(MDApp):
         self.progressspinner = False
         self.popup.dismiss()
 
-    def callback(self):
+    @staticmethod
+    def callback():
         toast('Coming soon')
 
-    def join_all_threads(self):
+    @staticmethod
+    def join_all_threads():
         try:
             for t in threads:
                 t.join()
