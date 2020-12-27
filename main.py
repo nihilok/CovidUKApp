@@ -20,6 +20,10 @@ import json
 import screens
 import logic
 
+# Keyboard settings:
+Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
+Window.softinput_mode = "below_target"
+
 folder = os.path.dirname(os.path.realpath(__file__))
 Builder.load_file("kv/myprogressspinner.kv")
 threads = []
