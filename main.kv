@@ -93,15 +93,21 @@
 
 
 <GraphScreen>:
+    id: graph_screen
     MDLabel:
         id: graph_screen_title
-        text: "Graphs coming soon"
+        text: "Graphs under development"
         font_style: "H6"
         theme_text_color: 'Primary'
         halign: "center"
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         size_hint_y: None
         height: self.texture_size[1] + dp(20)
+    MDRaisedButton:
+        text: "Plot graph"
+        pos_hint: {'center_x': 0.5}
+        on_release:
+            app.plot_graph(app.current_area)
 
 
 BoxLayout:

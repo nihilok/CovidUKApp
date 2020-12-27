@@ -6,6 +6,8 @@ import requests
 from kivy.app import App
 from uk_covid19 import Cov19API
 
+from kivy_garden.graph import Graph, MeshLinePlot
+
 app = App().get_running_app()
 
 
@@ -63,6 +65,23 @@ def get_data(area, area_type=None):
         df = api.get_dataframe()
         return data, df
 
+def plot_graph(x,y):
+    ticker_list = ['newCases', 'newDeaths']
+    tickers_on_plot = ['newCases', 'newDeaths']
+    max_y = 0
+    for line in y:
+        if max(line) > max_y:
+            max_y = max(line)
+    plot_colors = [[1, 1, 0, 1], [1, 0, 0, 1]]
+    graph = Graph(ylabel='Cases/Deaths', y_grid_label=True,
+                  x_grid_label=False, padding=5, x_grid=True, y_grid=True, xmax=30, ymin=0, ymax=max_y)
+    x_nums = [i for i in range(1,31)]
+    for i, line in enumerate(y):
+        plot = MeshLinePlot(color=plot_colors[i])
+        plot.points = [(i,j) for i, j in zip(x_nums,line[-30:])]
+        print(line[-30:])
+        graph.add_plot(plot)
+    return graph
 
 def my_request(area):
     filters = ";".join(set_params(area))

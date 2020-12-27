@@ -4,12 +4,13 @@ import time
 from kivy import platform
 from kivy.app import App
 from kivy.metrics import dp
+from kivy.uix.modalview import ModalView
 from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.core.window import Window
-from kivy_garden.graph import Graph, MeshLinePlot
+
 from kivy.properties import StringProperty, ObjectProperty, BooleanProperty, ListProperty
 from kivymd.toast import toast
 from kivymdtools.my_datatables import MDDataTable
@@ -45,6 +46,18 @@ class MainApp(MDApp):
         self.popup = Factory.LoadingPopup()
         self.popup.background = "images/transparent_image.png"
         self.row_data = ListProperty()
+        self.current_area = StringProperty()
+        self._all_data_dict = {
+            'data': []
+        }
+
+        # graph variables
+        self.ticker_list = ['newCases', 'newDeaths']
+        self.tickers_on_plot = ['newCases', 'newDeaths']
+        self.plot_colors = [[1,1,0,1], [1,0,0,1]]
+        self.plot_dates = ListProperty()
+        self.plot_cases = ListProperty()
+        self.plot_deaths = ListProperty()
 
 
     def build(self):
@@ -94,17 +107,14 @@ class MainApp(MDApp):
                 )
                 title.text = area.title()
             else:
-                _all_data_dict = {
-                    'data': []
-                }
                 deaths = [deaths for deaths in data['newDeathsByPublishDate'].values()]
                 for i, date in enumerate(data['newCases'].keys()):
-                    _all_data_dict['data'].append({
+                    self._all_data_dict['data'].append({
                         'date': date,
                         'newCases': data['newCases'][date],
                         'newDeaths': data['newDeaths'][date]
                     })
-                    _all_data_dict['newCases'] = data['newCases'][date]
+                    self._all_data_dict['newCases'] = data['newCases'][date]
                 data_tables = MDDataTable(
                     size_hint=(0.9, 1),
                     pos_hint={'center_x': 0.5},
@@ -127,7 +137,7 @@ class MainApp(MDApp):
                     ],
                     row_data=[(item['date'],
                                item['newCases'],
-                               item['newDeaths']) for item in list(reversed(_all_data_dict['data']))],
+                               item['newDeaths']) for item in list(reversed(self._all_data_dict['data']))],
                     rows_num=10
                 )
                 title.text = 'Data for the Whole United Kingdom'
@@ -158,6 +168,7 @@ class MainApp(MDApp):
 
     def dataframe_thread(self, *args):
         area = self.root.ids.data_screen.ids.area_name
+        self.current_area = area.text
         if area.text:
             self.populate_dataframe(area.text)
         else:
@@ -172,6 +183,22 @@ class MainApp(MDApp):
 
     def reset_hint_text(self):
         self.root.ids.data_screen.ids.area_name.hint_text = 'Area'
+
+    def plot_graph(self, area):
+        data, df = logic.get_data(area)
+        if area == 'all':
+            print(self._all_data_dict)
+            self.plot_dates = [item['date'] for item in self._all_data_dict['data']]
+            self.plot_cases = [item['newCases'] for item in self._all_data_dict['data']]
+            self.plot_deaths = [item['newDeaths'] for item in self._all_data_dict['data']]
+        else:
+            self.plot_dates = list(reversed(df['date']))
+            self.plot_cases = list(reversed(df['newCases']))
+            self.plot_deaths = list(reversed(df['newDeaths']))
+        y = [self.plot_cases, self.plot_deaths]
+        view = ModalView(size_hint=(0.75,.75))
+        view.add_widget(logic.plot_graph(self.plot_dates, y))
+        view.open()
 
 
     def display_loading_screen(self, *args):
