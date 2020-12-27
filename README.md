@@ -8,4 +8,4 @@ Search for an area and get a dataframe with the new daily cases and deaths by da
 
 Graphs coming soon.
 
-![alt text](https://github.com/nihilok/CovidUKApp/blob/master/scr.jpg?raw=true)
+![alt text](https://raw.githubusercontent.com/nihilok/CovidUKApp/master/images/scr.jpg?raw=true)
