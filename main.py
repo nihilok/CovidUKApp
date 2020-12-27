@@ -1,5 +1,7 @@
 import os
 import time
+
+from kivy import platform
 from kivy.app import App
 from kivy.metrics import dp
 from kivy.uix.widget import Widget
@@ -22,8 +24,8 @@ import screens
 import logic
 
 # Keyboard settings:
-Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
-Window.softinput_mode = "below_target"
+# Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
+# Window.softinput_mode = "below_target"
 
 folder = os.path.dirname(os.path.realpath(__file__))
 Builder.load_file("kv/myprogressspinner.kv")
@@ -47,6 +49,10 @@ class MainApp(MDApp):
 
     def build(self):
         Clock.max_iteration = 20
+        if platform != 'win':
+            Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
+            Window.softinput_mode = "below_target"
+
 
     def on_start(self):
         self.screen_manager = self.root.ids.main_screen_manager
@@ -67,17 +73,13 @@ class MainApp(MDApp):
 
     def populate_dataframe(self, area, *args):
         try:
-
             data, df = logic.get_data(area)
             layout = self.root.ids.data_screen.ids.data_screen_layout
             title = self.root.ids.data_screen.ids.data_screen_title
             btn = self.root.ids.data_screen.ids.btn
             search = self.root.ids.data_screen.ids.area_name
             search_card = self.root.ids.data_screen.ids.search_card
-            try:
-                layout.clear_widgets()
-            except Exception as e:
-                print(e)
+            layout.clear_widgets()
             time.sleep(1)
             if area != 'all':
                 data_tables = MDDataTable(
@@ -140,10 +142,12 @@ class MainApp(MDApp):
                 height=dp(10)
             )
             layout.add_widget(spacer)
+        except Exception as e:
+            print(e)
+        try:
             Clock.schedule_once(self.hide_loading_screen)
         except Exception as e:
             print(e)
-            Clock.schedule_once(self.hide_loading_screen)
 
     def dataframe_callback(self):
         self.display_loading_screen()
