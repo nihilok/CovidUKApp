@@ -12,7 +12,7 @@ from kivy.core.window import Window
 from kivy_garden.graph import Graph, MeshLinePlot
 from kivy.properties import StringProperty, ObjectProperty, BooleanProperty, ListProperty
 from kivymd.toast import toast
-from kivymd.uix.datatables import MDDataTable
+from kivymdtools.my_datatables import MDDataTable
 from kivymd.uix.label import MDLabel
 from kivymd.uix.list import ThreeLineIconListItem
 from threading import Thread
