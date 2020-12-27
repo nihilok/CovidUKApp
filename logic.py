@@ -79,7 +79,6 @@ def plot_graph(x,y):
     for i, line in enumerate(y):
         plot = MeshLinePlot(color=plot_colors[i])
         plot.points = [(i,j) for i, j in zip(x_nums,line[-30:])]
-        print(line[-30:])
         graph.add_plot(plot)
     return graph
 

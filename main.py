@@ -187,19 +187,17 @@ class MainApp(MDApp):
     def plot_graph(self, area):
         data, df = logic.get_data(area)
         if area == 'all':
-            print(self._all_data_dict)
             self.plot_dates = [item['date'] for item in self._all_data_dict['data']]
             self.plot_cases = [item['newCases'] for item in self._all_data_dict['data']]
             self.plot_deaths = [item['newDeaths'] for item in self._all_data_dict['data']]
         else:
-            self.plot_dates = list(reversed(df['date']))
-            self.plot_cases = list(reversed(df['newCases']))
-            self.plot_deaths = list(reversed(df['newDeaths']))
+            self.plot_dates = list(reversed(list(df['date'].head(30))))
+            self.plot_cases = list(reversed(list(df['newCases'].head(30))))
+            self.plot_deaths = list(reversed(list(df['newDeaths'].head(30))))
         y = [self.plot_cases, self.plot_deaths]
         view = ModalView(size_hint=(0.75,.75))
         view.add_widget(logic.plot_graph(self.plot_dates, y))
         view.open()
-
 
     def display_loading_screen(self, *args):
         self.progressspinner = True
