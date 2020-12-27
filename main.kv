@@ -72,11 +72,11 @@
             MDTextField:
                 id: area_name
                 hint_text: "Area:"
-                helper_text: "e.g. 'England', 'Berkshire', 'Oxford' for totals search 'all'"
+                helper_text: "e.g. 'Norther Ireland', 'East Midlands', 'Oxford', or for totals search 'all'"
                 helper_text_mode: "on_focus"
                 write_tab: False
                 pos_hint: {'center_x': .5, 'center_y': .5}
-                size_hint_x: .6
+                size_hint_x: .8
                 on_text_validate:
                     app.dataframe_callback()
             MDRaisedButton:

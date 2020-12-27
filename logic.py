@@ -51,14 +51,11 @@ def get_data(area, area_type=None):
         # nations_df.set_index('date', inplace=False)
         for index, row in nations_df.iterrows():
             if not row['newDeaths']:
-                print('zero value!!!!!')
                 row['newDeaths'] += row['newDeathsByPublishDate']
                 row['newDeaths'] = int(row['newDeaths'])
         nations_df = nations_df.groupby('date').sum()
-        print(nations_df)
         data = nations_df.to_dict()
         df = nations_df
-        print(data)
         return data, df
     else:
         api = Cov19API(filters=set_params(area), structure=structure)

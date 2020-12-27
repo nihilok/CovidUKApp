@@ -2,6 +2,7 @@ import os
 import time
 from kivy.app import App
 from kivy.metrics import dp
+from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from kivy.lang import Builder
@@ -41,7 +42,6 @@ class MainApp(MDApp):
         self.progressspinner = False
         self.popup = Factory.LoadingPopup()
         self.popup.background = "images/transparent_image.png"
-        self.t1 = Thread(target=self.display_loading_screen)
         self.row_data = ListProperty()
 
 
@@ -66,79 +66,93 @@ class MainApp(MDApp):
 
 
     def populate_dataframe(self, area, *args):
-        data, df = logic.get_data(area)
-        layout = self.root.ids.data_screen.ids.data_screen_layout
-        title = self.root.ids.data_screen.ids.data_screen_title
-        btn = self.root.ids.data_screen.ids.btn
-        search = self.root.ids.data_screen.ids.area_name
-        search_card = self.root.ids.data_screen.ids.search_card
-        if area != 'all':
+        try:
 
-            data_tables = MDDataTable(
-                size_hint=(0.9, 1),
-                pos_hint={'center_x': 0.5},
-                use_pagination=True,
-                # halign='center',
-                column_data=[
-                    ("Date", dp(25)),
-                    ("New Cases", dp(25)),
-                    ("New Deaths", dp(25)),
-                ],
-                row_data=[(item['date'], item['newCases'], (item['newDeaths'] if item['newDeaths'] else item['newDeathsByPublishDate'])) for item in data['data']],
-                rows_num=10)
-            title.text = area.title()
-        else:
-            _all_data_dict = {
-                'data': []
-            }
-            deaths = [deaths for deaths in data['newDeathsByPublishDate'].values()]
-            for i, date in enumerate(data['newCases'].keys()):
-                _all_data_dict['data'].append({
-                    'date': date,
-                    'newCases': data['newCases'][date],
-                    'newDeaths': data['newDeaths'][date]
-                })
-                _all_data_dict['newCases'] = data['newCases'][date]
-            data_tables = MDDataTable(
-                size_hint=(0.9, 1),
-                pos_hint={'center_x': 0.5},
-                use_pagination=True,
-                # halign='center',
-                column_data=[
-                    ("Date", dp(25)),
-                    ("New Cases", dp(25)),
-                    ("New Deaths", dp(25)),
-                ],
-                row_data=[(item['date'],
-                           item['newCases'],
-                           item['newDeaths']) for item in list(reversed(_all_data_dict['data']))],
-                rows_num=10
+            data, df = logic.get_data(area)
+            layout = self.root.ids.data_screen.ids.data_screen_layout
+            title = self.root.ids.data_screen.ids.data_screen_title
+            btn = self.root.ids.data_screen.ids.btn
+            search = self.root.ids.data_screen.ids.area_name
+            search_card = self.root.ids.data_screen.ids.search_card
+            try:
+                layout.clear_widgets()
+            except Exception as e:
+                print(e)
+            time.sleep(1)
+            if area != 'all':
+                data_tables = MDDataTable(
+                    size_hint=(0.9, 1),
+                    pos_hint={'center_x': 0.5},
+                    use_pagination=True,
+                    # halign='center',
+                    column_data=[
+                        ("Date", dp(25)),
+                        ("New Cases", dp(25)),
+                        ("New Deaths", dp(25)),
+                    ],
+                    row_data=[(item['date'], item['newCases'], (item['newDeaths'] if item['newDeaths'] else item['newDeathsByPublishDate'])) for item in data['data']],
+                )
+                title.text = area.title()
+            else:
+                _all_data_dict = {
+                    'data': []
+                }
+                deaths = [deaths for deaths in data['newDeathsByPublishDate'].values()]
+                for i, date in enumerate(data['newCases'].keys()):
+                    _all_data_dict['data'].append({
+                        'date': date,
+                        'newCases': data['newCases'][date],
+                        'newDeaths': data['newDeaths'][date]
+                    })
+                    _all_data_dict['newCases'] = data['newCases'][date]
+                data_tables = MDDataTable(
+                    size_hint=(0.9, 1),
+                    pos_hint={'center_x': 0.5},
+                    use_pagination=True,
+                    column_data=[
+                        ("Date", dp(25)),
+                        ("New Cases", dp(25)),
+                        ("New Deaths", dp(25)),
+                    ],
+                    rows_num=10
+                )
+                data_tables = MDDataTable(
+                    size_hint=(0.9, .9),
+                    pos_hint={'center_x': 0.5},
+                    use_pagination=True,
+                    column_data=[
+                        ("Date", dp(25)),
+                        ("New Cases", dp(25)),
+                        ("New Deaths", dp(25)),
+                    ],
+                    row_data=[(item['date'],
+                               item['newCases'],
+                               item['newDeaths']) for item in list(reversed(_all_data_dict['data']))],
+                    rows_num=10
+                )
+                title.text = 'Data for the Whole United Kingdom'
+
+            layout.add_widget(title)
+            layout.add_widget(data_tables)
+            layout.add_widget(search_card)
+            spacer = Widget(
+                size_hint_y=None,
+                height=dp(10)
             )
-            title.text = 'Data for the Whole United Kingdom'
-
-        layout.clear_widgets()
-        layout.add_widget(title)
-        layout.add_widget(data_tables)
-        layout.add_widget(search_card)
-        spacer = MDLabel(
-            size_hint_y=None,
-            height=0.05
-        )
-        layout.add_widget(spacer)
-
-        # try:
-        #     for t in threads:
-        #         t.join()
-        # except RuntimeError as r:
-        #     print(r)
-        Clock.schedule_once(self.hide_loading_screen)
+            layout.add_widget(spacer)
+            Clock.schedule_once(self.hide_loading_screen)
+        except Exception as e:
+            print(e)
+            Clock.schedule_once(self.hide_loading_screen)
 
     def dataframe_callback(self):
         self.display_loading_screen()
+        self.join_all_threads()
         t = Thread(target=self.dataframe_thread)
         t.daemon = True
         t.start()
         threads.append(t)
+        Clock.schedule_once(lambda dt: self.join_all_threads(), 2)
 
     def dataframe_thread(self, *args):
         area = self.root.ids.data_screen.ids.area_name
@@ -169,6 +183,14 @@ class MainApp(MDApp):
 
     def callback(self):
         toast('Coming soon')
+
+    def join_all_threads(self):
+        try:
+            for t in threads:
+                t.join()
+            print('threads joined')
+        except RuntimeError as e:
+            print(e)
 
 
 if __name__ == "__main__":
