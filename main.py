@@ -80,9 +80,9 @@ class MainApp(MDApp):
                 use_pagination=True,
                 # halign='center',
                 column_data=[
-                    ("Date", dp(30)),
-                    ("New Cases", dp(30)),
-                    ("New Deaths", dp(30)),
+                    ("Date", dp(25)),
+                    ("New Cases", dp(25)),
+                    ("New Deaths", dp(25)),
                 ],
                 row_data=[(item['date'], item['newCases'], (item['newDeaths'] if item['newDeaths'] else item['newDeathsByPublishDate'])) for item in data['data']],
                 rows_num=10)
@@ -105,9 +105,9 @@ class MainApp(MDApp):
                 use_pagination=True,
                 # halign='center',
                 column_data=[
-                    ("Date", dp(30)),
-                    ("New Cases", dp(30)),
-                    ("New Deaths", dp(30)),
+                    ("Date", dp(25)),
+                    ("New Cases", dp(25)),
+                    ("New Deaths", dp(25)),
                 ],
                 row_data=[(item['date'],
                            item['newCases'],
