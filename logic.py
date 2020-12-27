@@ -46,8 +46,17 @@ def get_data(area, area_type=None):
     nations = ['england', 'wales', 'scotland', 'northern ireland']
     if area == 'all':
         nations_df = pd.concat([Cov19API(filters=set_params(nation), structure=structure).get_dataframe() for nation in nations])
+        nations_df['newDeaths'].fillna(int(0), inplace=True)
+        # nations_df['date'] = pd.to_datetime(nations_df['date'])
+        # nations_df.set_index('date', inplace=False)
+        for index, row in nations_df.iterrows():
+            if not row['newDeaths']:
+                print('zero value!!!!!')
+                row['newDeaths'] += row['newDeathsByPublishDate']
+                row['newDeaths'] = int(row['newDeaths'])
         nations_df = nations_df.groupby('date').sum()
-        data = nations_df.to_json()
+        print(nations_df)
+        data = nations_df.to_dict()
         df = nations_df
         print(data)
         return data, df

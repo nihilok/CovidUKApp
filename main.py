@@ -69,6 +69,7 @@ class MainApp(MDApp):
         search = self.root.ids.data_screen.ids.area_name
         search_card = self.root.ids.data_screen.ids.search_card
         if area != 'all':
+
             data_tables = MDDataTable(
                 size_hint=(0.9, 1),
                 pos_hint={'center_x': 0.5},
@@ -79,8 +80,21 @@ class MainApp(MDApp):
                     ("New Cases", dp(30)),
                     ("New Deaths", dp(30)),
                 ],
-                row_data=[(item['date'], item['newCases'], (item['newDeaths'] if item['newDeaths'] else item['newDeathsByPublishDate'])) for item in data['data']])
+                row_data=[(item['date'], item['newCases'], (item['newDeaths'] if item['newDeaths'] else item['newDeathsByPublishDate'])) for item in data['data']],
+                rows_num=10)
+            title.text = area.title()
         else:
+            _all_data_dict = {
+                'data': []
+            }
+            deaths = [deaths for deaths in data['newDeathsByPublishDate'].values()]
+            for i, date in enumerate(data['newCases'].keys()):
+                _all_data_dict['data'].append({
+                    'date': date,
+                    'newCases': data['newCases'][date],
+                    'newDeaths': data['newDeaths'][date]
+                })
+                _all_data_dict['newCases'] = data['newCases'][date]
             data_tables = MDDataTable(
                 size_hint=(0.9, 1),
                 pos_hint={'center_x': 0.5},
@@ -91,12 +105,14 @@ class MainApp(MDApp):
                     ("New Cases", dp(30)),
                     ("New Deaths", dp(30)),
                 ],
-                # TODO: parse dictionary from groupby mess!
-                # row_data=[(data )]
+                row_data=[(item['date'],
+                           item['newCases'],
+                           item['newDeaths']) for item in list(reversed(_all_data_dict['data']))],
+                rows_num=10
             )
+            title.text = 'Data for the Whole United Kingdom'
 
         layout.clear_widgets()
-        title.text = area.title()
         layout.add_widget(title)
         layout.add_widget(data_tables)
         layout.add_widget(search_card)
