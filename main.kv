@@ -20,7 +20,8 @@
     spacing: 10
     padding: 10
     size_hint: 0.9, None
-    border_radius: '10dp'
+    border_radius: 10
+    radius: [20]
 
 <SettingsScreen>:
     GridLayout:
@@ -64,14 +65,15 @@
             size_hint_y: None
             height: self.texture_size[1] + dp(20)
         MyCard:
-            height: '120dp'
+            height: '135dp'
             pos_hint: {'center_x': 0.5}
-            border_radius: 10
-            radius: [20]
+
             id: search_card
             MDTextField:
                 id: area_name
                 hint_text: "Area:"
+                helper_text: "e.g. 'England', 'Berkshire', 'Oxford' for totals search 'all'"
+                helper_text_mode: "on_focus"
                 write_tab: False
                 pos_hint: {'center_x': .5, 'center_y': .5}
                 size_hint_x: .6

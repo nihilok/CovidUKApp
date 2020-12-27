@@ -7,7 +7,7 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy_garden.graph import Graph, MeshLinePlot
-from kivy.properties import StringProperty, ObjectProperty, BooleanProperty
+from kivy.properties import StringProperty, ObjectProperty, BooleanProperty, ListProperty
 from kivymd.toast import toast
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.label import MDLabel
@@ -38,11 +38,11 @@ class MainApp(MDApp):
         self.popup = Factory.LoadingPopup()
         self.popup.background = "images/transparent_image.png"
         self.t1 = Thread(target=self.display_loading_screen)
+        self.row_data = ListProperty()
 
 
     def build(self):
         Clock.max_iteration = 20
-        pass
 
     def on_start(self):
         self.screen_manager = self.root.ids.main_screen_manager
@@ -68,18 +68,33 @@ class MainApp(MDApp):
         btn = self.root.ids.data_screen.ids.btn
         search = self.root.ids.data_screen.ids.area_name
         search_card = self.root.ids.data_screen.ids.search_card
-        data_tables = MDDataTable(
-            size_hint=(0.9, 1),
-            pos_hint={'center_x':0.5},
-            use_pagination=True,
-            # halign='center',
-            column_data=[
-                ("Date", dp(30)),
-                ("New Cases", dp(30)),
-                ("New Deaths", dp(30)),
-            ],
-            row_data=[(item['date'], item['newCases'], item['newDeaths']) for item in data['data']]
-        )
+        if area != 'all':
+            data_tables = MDDataTable(
+                size_hint=(0.9, 1),
+                pos_hint={'center_x': 0.5},
+                use_pagination=True,
+                # halign='center',
+                column_data=[
+                    ("Date", dp(30)),
+                    ("New Cases", dp(30)),
+                    ("New Deaths", dp(30)),
+                ],
+                row_data=[(item['date'], item['newCases'], (item['newDeaths'] if item['newDeaths'] else item['newDeathsByPublishDate'])) for item in data['data']])
+        else:
+            data_tables = MDDataTable(
+                size_hint=(0.9, 1),
+                pos_hint={'center_x': 0.5},
+                use_pagination=True,
+                # halign='center',
+                column_data=[
+                    ("Date", dp(30)),
+                    ("New Cases", dp(30)),
+                    ("New Deaths", dp(30)),
+                ],
+                # TODO: parse dictionary from groupby mess!
+                # row_data=[(data )]
+            )
+
         layout.clear_widgets()
         title.text = area.title()
         layout.add_widget(title)
