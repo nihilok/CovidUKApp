@@ -7,3 +7,5 @@ Android app built in Kivy (1.11) (maybe iOS in future)
 Search for an area and get a dataframe with the new daily cases and deaths by day.
 
 Graphs coming soon.
+
+![alt text](https://github.com/nihilok/CovidUKApp/blob/master/scr.jpg?raw=true)
